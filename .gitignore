@@ -1,0 +1,15 @@
+# binaries
+bin/
+*.exe
+tmp/
+
+# test artifacts
+coverage.out
+
+# IDE
+.idea/
+.vscode/
+
+# env overrides (never commit real secrets)
+*.env
+.env
