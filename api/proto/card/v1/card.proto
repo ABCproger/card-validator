@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package card.v1;
+
+service CardService {
+  rpc Validate(ValidateRequest) returns (ValidateResponse);
+}
+
+message ValidateRequest {
+  string card_number      = 1;
+  uint32 expiration_month = 2;
+  uint32 expiration_year  = 3;
+}
+
+message ValidateResponse {
+  optional bool   valid = 1;
+  ValidationError error = 2;
+}
+
+message ValidationError {
+  string code    = 1;
+  string message = 2;
+}
