@@ -20,10 +20,15 @@ type Server struct {
 }
 
 func New(handler http.Handler, addr string) *Server {
+	protocols := new(http.Protocols)
+	protocols.SetHTTP1(true)
+	protocols.SetUnencryptedHTTP2(true)
+
 	s := &Server{
 		httpServer: &http.Server{
 			Addr:              addr,
 			Handler:           handler,
+			Protocols:         protocols,
 			ReadHeaderTimeout: defaultReadHeaderTimeout,
 			ReadTimeout:       defaultReadTimeout,
 			WriteTimeout:      defaultWriteTimeout,
