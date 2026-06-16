@@ -1,0 +1,78 @@
+{
+  "info": {
+    "name": "Card Validator",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "valid card",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/card.v1.CardService/Validate",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cardNumber\": \"4111111111111111\",\n  \"expirationMonth\": 12,\n  \"expirationYear\": 2028\n}"
+        }
+      }
+    },
+    {
+      "name": "invalid card number (Luhn fail)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/card.v1.CardService/Validate",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cardNumber\": \"1111111111111\",\n  \"expirationMonth\": 12,\n  \"expirationYear\": 2028\n}"
+        }
+      }
+    },
+    {
+      "name": "invalid month",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/card.v1.CardService/Validate",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cardNumber\": \"4111111111111111\",\n  \"expirationMonth\": 13,\n  \"expirationYear\": 2028\n}"
+        }
+      }
+    },
+    {
+      "name": "expired card",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/card.v1.CardService/Validate",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cardNumber\": \"4111111111111111\",\n  \"expirationMonth\": 1,\n  \"expirationYear\": 2021\n}"
+        }
+      }
+    },
+    {
+      "name": "health check",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/healthz",
+        "header": []
+      }
+    }
+  ]
+}
