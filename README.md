@@ -7,7 +7,10 @@ Validates card number (Luhn checksum), expiration month, and expiration year. Re
 ## Quick start
 
 ```bash
-docker compose -f deploy/docker-compose.yml up --build
+docker compose -f deploy/docker-compose.yml up
+
+# or via Makefile
+make docker-up
 ```
 
 Service starts on `http://localhost:8080`.
@@ -18,28 +21,28 @@ Import `postman_collection.json` from the repo root into Postman — all request
 
 Or use curl:
 
+valid card → `{ "valid": true }`
 ```bash
-# valid card → { "valid": true }
-curl -X POST http://localhost:8080/card.v1.CardService/Validate \
-  -H "Content-Type: application/json" \
-  -d '{"card_number":"4111111111111111","expiration_month":12,"expiration_year":2028}'
+curl -X POST http://localhost:8080/card.v1.CardService/Validate -H "Content-Type: application/json" -d '{"cardNumber":"4111111111111111","expirationMonth":12,"expirationYear":2028}'
+```
 
-# invalid card number (Luhn fail) → { "valid": false, "error": { "code": "001", ... } }
-curl -X POST http://localhost:8080/card.v1.CardService/Validate \
-  -H "Content-Type: application/json" \
-  -d '{"card_number":"1111111111111","expiration_month":12,"expiration_year":2028}'
+invalid card number → `{ "valid": false, "error": { "code": "001", ... } }`
+```bash
+curl -X POST http://localhost:8080/card.v1.CardService/Validate -H "Content-Type: application/json" -d '{"cardNumber":"1111111111111","expirationMonth":12,"expirationYear":2028}'
+```
 
-# invalid month → { "valid": false, "error": { "code": "002", ... } }
-curl -X POST http://localhost:8080/card.v1.CardService/Validate \
-  -H "Content-Type: application/json" \
-  -d '{"card_number":"4111111111111111","expiration_month":13,"expiration_year":2028}'
+invalid month → `{ "valid": false, "error": { "code": "002", ... } }`
+```bash
+curl -X POST http://localhost:8080/card.v1.CardService/Validate -H "Content-Type: application/json" -d '{"cardNumber":"4111111111111111","expirationMonth":13,"expirationYear":2028}'
+```
 
-# expired card → { "valid": false, "error": { "code": "003", ... } }
-curl -X POST http://localhost:8080/card.v1.CardService/Validate \
-  -H "Content-Type: application/json" \
-  -d '{"card_number":"4111111111111111","expiration_month":1,"expiration_year":2021}'
+expired card → `{ "valid": false, "error": { "code": "003", ... } }`
+```bash
+curl -X POST http://localhost:8080/card.v1.CardService/Validate -H "Content-Type: application/json" -d '{"cardNumber":"4111111111111111","expirationMonth":1,"expirationYear":2021}'
+```
 
-# health check → { "status": "ok" }
+health check → `{ "status": "ok" }`
+```bash
 curl http://localhost:8080/healthz
 ```
 
@@ -56,26 +59,24 @@ The server exposes **gRPC server reflection**, so no `.proto` files are needed �
 
 ### grpcurl
 
+valid card
 ```bash
-# valid card
-grpcurl -plaintext \
-  -d '{"card_number":"4111111111111111","expiration_month":12,"expiration_year":2028}' \
-  localhost:8080 card.v1.CardService/Validate
+grpcurl -plaintext -d '{"cardNumber":"4111111111111111","expirationMonth":12,"expirationYear":2028}' localhost:8080 card.v1.CardService/Validate
+```
 
-# invalid card number
-grpcurl -plaintext \
-  -d '{"card_number":"1111111111111","expiration_month":12,"expiration_year":2028}' \
-  localhost:8080 card.v1.CardService/Validate
+invalid card number
+```bash
+grpcurl -plaintext -d '{"cardNumber":"1111111111111","expirationMonth":12,"expirationYear":2028}' localhost:8080 card.v1.CardService/Validate
+```
 
-# invalid month
-grpcurl -plaintext \
-  -d '{"card_number":"4111111111111111","expiration_month":13,"expiration_year":2028}' \
-  localhost:8080 card.v1.CardService/Validate
+invalid month
+```bash
+grpcurl -plaintext -d '{"cardNumber":"4111111111111111","expirationMonth":13,"expirationYear":2028}' localhost:8080 card.v1.CardService/Validate
+```
 
-# expired card
-grpcurl -plaintext \
-  -d '{"card_number":"4111111111111111","expiration_month":1,"expiration_year":2021}' \
-  localhost:8080 card.v1.CardService/Validate
+expired card
+```bash
+grpcurl -plaintext -d '{"cardNumber":"4111111111111111","expirationMonth":1,"expirationYear":2021}' localhost:8080 card.v1.CardService/Validate
 ```
 
 ## Error codes
